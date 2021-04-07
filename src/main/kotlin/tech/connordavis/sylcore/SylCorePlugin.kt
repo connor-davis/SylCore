@@ -6,7 +6,7 @@ class SylCorePlugin : KotlinPlugin() {
     override fun onPluginEnable() {
 
     }
-    
+
     override fun onPluginDisable() {
 
     }
