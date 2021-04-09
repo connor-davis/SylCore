@@ -39,4 +39,17 @@ class GameModeCommand : Command(
         }
         return false
     }
+
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: org.bukkit.command.Command,
+        commandLabel: String,
+        args: Array<out String>,
+    ): MutableList<String> {
+        if (args[0] === "gamemode") {
+            return mutableListOf("creative", "survival", "spectator", "adventure")
+        }
+
+        return mutableListOf()
+    }
 }

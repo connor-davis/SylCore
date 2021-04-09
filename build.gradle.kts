@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "tech.connordavis"
-version = "0.0.3"
+version = "0.0.5"
 
 repositories {
     mavenCentral() // This is needed for dependencies.
