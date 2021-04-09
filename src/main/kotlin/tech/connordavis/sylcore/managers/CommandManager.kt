@@ -2,18 +2,13 @@ package tech.connordavis.sylcore.managers
 
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer
 import org.bukkit.plugin.java.JavaPlugin
-import tech.connordavis.sylcore.commands.GameModeCommand
 import tech.connordavis.sylcore.utils.Command
 
 class CommandManager(private val plugin: JavaPlugin) {
     private var commands: MutableMap<String, Command> = mutableMapOf()
 
-    init {
-        "gamemode".addCommand(GameModeCommand())
-    }
-
-    private fun String.addCommand(command: Command) {
-        this@CommandManager.commands.putIfAbsent(this, command)
+    fun addCommand(name: String, command: Command) {
+        this.commands.putIfAbsent(name, command)
     }
 
     fun removeCommand(name: String) {

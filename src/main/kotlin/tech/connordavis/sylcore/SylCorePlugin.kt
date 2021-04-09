@@ -1,6 +1,8 @@
 package tech.connordavis.sylcore
 
 import org.bukkit.plugin.java.JavaPlugin
+import tech.connordavis.sylcore.commands.GameModeCommand
+import tech.connordavis.sylcore.commands.TimeCommand
 import tech.connordavis.sylcore.managers.CommandManager
 
 class SylCorePlugin : JavaPlugin() {
@@ -15,6 +17,9 @@ class SylCorePlugin : JavaPlugin() {
     }
 
     override fun onEnable() {
+        commandManager.addCommand("gamemode", GameModeCommand())
+        commandManager.addCommand("time", TimeCommand())
+
         commandManager.registerCommands()
     }
 

@@ -9,7 +9,7 @@ import tech.connordavis.sylcore.utils.CommandInfo
 class GameModeCommand : Command(
     CommandInfo(
         "gamemode",
-        "this command allows players to change their gamemode.",
+        "This command lets you change your gamemode.",
         aliases = arrayOf("creative", "survival", "spectator", "adventure", "gmc", "gms", "gmspc", "gma")
     )
 ) {
@@ -46,10 +46,6 @@ class GameModeCommand : Command(
         commandLabel: String,
         args: Array<out String>,
     ): MutableList<String> {
-        if (args[0] === "gamemode") {
-            return mutableListOf("creative", "survival", "spectator", "adventure")
-        }
-
-        return mutableListOf()
+        return mutableListOf("creative", "survival", "spectator", "adventure")
     }
 }
