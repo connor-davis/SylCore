@@ -25,6 +25,16 @@ class CommandManager(private val plugin: JavaPlugin) {
 
         this.commands.forEach { (name, command) ->
             (plugin.server as CraftServer).commandMap.register(name, command)
+
+            plugin.getCommand(name)?.setExecutor { commandSender, _, commandLabel, args ->
+                command.execute(commandSender,
+                    commandLabel,
+                    args)
+            }
+
+            plugin.getCommand(name)?.setTabCompleter { commandSender, cmd, commandLabel, args ->
+                command.onTabComplete(commandSender, cmd, commandLabel, args)
+            }
         }
 
         plugin.logger.info("Registered ${this.commands.size} commands.")
