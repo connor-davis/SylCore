@@ -1,8 +1,8 @@
 name: SylCore
-version: 0.0.1
-main: tech.connordavis.sylcore.SylCorePlugin
-depend: [ KotlinBukkitAPI,Vault ]
-
-commands:
-  test:
-    usage: /<command>
+main: "tech.connordavis.sylcore.SylCorePlugin"
+version: 0.0.3
+api-version: 1.16
+depend: [ "Kotlin", "Vault" ]
+description: ""
+author: "darkio_"
+website: "https://connordavis.tech"

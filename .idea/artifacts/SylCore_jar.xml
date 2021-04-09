@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SylCore:jar">
+    <output-path>$PROJECT_DIR$/../../../Minecraft/server/plugins</output-path>
+    <root id="archive" name="SylCore.jar">
+      <element id="module-output" name="SylCore.main" />
+      <element id="module-source" name="SylCore.main" />
+    </root>
+  </artifact>
+</component>

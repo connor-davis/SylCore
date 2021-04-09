@@ -1,6 +1,8 @@
 package tech.connordavis.sylcore.managers
 
+import org.bukkit.craftbukkit.v1_16_R3.CraftServer
 import org.bukkit.plugin.java.JavaPlugin
+import tech.connordavis.sylcore.commands.GameModeCommand
 import tech.connordavis.sylcore.commands.TestCommand
 import tech.connordavis.sylcore.utils.Command
 
@@ -9,6 +11,7 @@ class CommandManager(private val plugin: JavaPlugin) {
 
     init {
         addCommand("test", TestCommand())
+        addCommand("gamemode", GameModeCommand())
     }
 
     private fun addCommand(name: String, command: Command) {
@@ -20,9 +23,13 @@ class CommandManager(private val plugin: JavaPlugin) {
     }
 
     fun registerCommands() {
+        plugin.logger.info("Registering commands.")
+
         this.commands.forEach { (name, command) ->
-            plugin.getCommand(name)?.setExecutor { sender, _, label, args -> command.execute(sender, label, args) }
+            (plugin.server as CraftServer).commandMap.register(name, command)
         }
+
+        plugin.logger.info("Registered ${this.commands.size} commands.")
     }
 
     fun getCommands(): MutableMap<String, Command> {

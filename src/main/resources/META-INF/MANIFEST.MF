@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: E:\Projects\Minecraft\SylCore\src\main\kotlin\tech\connordav
+ is\sylcore\SylCorePlugin
+
