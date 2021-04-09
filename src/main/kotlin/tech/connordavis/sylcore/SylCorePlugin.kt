@@ -1,13 +1,24 @@
 package tech.connordavis.sylcore
 
-import br.com.devsrsouza.kotlinbukkitapi.architecture.KotlinPlugin
+import org.bukkit.plugin.java.JavaPlugin
+import tech.connordavis.sylcore.managers.CommandManager
 
-class SylCorePlugin : KotlinPlugin() {
-    override fun onPluginEnable() {
-
+class SylCorePlugin : JavaPlugin() {
+    companion object {
+        lateinit var instance: SylCorePlugin private set
+        lateinit var commandManager: CommandManager private set
     }
 
-    override fun onPluginDisable() {
+    init {
+        instance = this
+        commandManager = CommandManager(instance)
+    }
 
+    override fun onEnable() {
+        commandManager.registerCommands()
+    }
+
+    override fun onDisable() {
+        commandManager.getCommands().forEach { (name, _) -> commandManager.removeCommand(name) }
     }
 }
