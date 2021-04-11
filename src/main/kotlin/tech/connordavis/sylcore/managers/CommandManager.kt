@@ -38,4 +38,8 @@ class CommandManager(private val plugin: JavaPlugin) {
     fun getCommands(): MutableMap<String, Command> {
         return this.commands
     }
+
+    fun getPlugin(): JavaPlugin {
+        return plugin
+    }
 }
