@@ -15,14 +15,6 @@ class EconomyManager {
         saveAccount(this.accounts[holder]!!)
     }
 
-    fun deleteAccount(holder: String) {
-        val accountsFile = fileManager.getFile("accounts")
-        val accountsConfig = accountsFile!!.getConfig()
-
-        accountsConfig.set(holder, null)
-        this.accounts.remove(holder)
-    }
-
     fun getAccount(holder: String): Account {
         return this.accounts[holder]!!
     }
