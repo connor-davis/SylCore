@@ -19,7 +19,6 @@ import tech.connordavis.sylcore.vault.economy.SylEconomy
 import tech.connordavis.sylcore.vault.permissions.PermissionsManager
 import tech.connordavis.sylcore.vault.permissions.SylPermissions
 
-
 class SylCorePlugin : JavaPlugin() {
     companion object {
         lateinit var instance: SylCorePlugin private set
