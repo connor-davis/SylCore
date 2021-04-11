@@ -13,8 +13,8 @@ import tech.connordavis.sylcore.files.Config
 import tech.connordavis.sylcore.files.ServerSpawn
 import tech.connordavis.sylcore.managers.CommandManager
 import tech.connordavis.sylcore.managers.FileManager
-import tech.connordavis.sylcore.vault.SylEconomy
 import tech.connordavis.sylcore.vault.economy.EconomyManager
+import tech.connordavis.sylcore.vault.economy.SylEconomy
 
 
 class SylCorePlugin : JavaPlugin() {
