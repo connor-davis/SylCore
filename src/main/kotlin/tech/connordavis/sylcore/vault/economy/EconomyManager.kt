@@ -1,5 +1,6 @@
 package tech.connordavis.sylcore.vault.economy
 
+import org.bukkit.configuration.file.YamlConfiguration
 import tech.connordavis.sylcore.SylCorePlugin
 
 class EconomyManager {
@@ -53,7 +54,9 @@ class EconomyManager {
         val accountsFile = fileManager.getFile("accounts")
         val accountsConfig = accountsFile!!.getConfig()
 
-        accountsConfig.set(account.accountHolder, account)
+        accountsConfig.set("${account.accountHolder}.accountHolder", account.accountHolder)
+        accountsConfig.set("${account.accountHolder}.balance", account.balance)
+
         accountsFile.saveFile()
     }
 
@@ -86,7 +89,18 @@ class EconomyManager {
         val banksFile = fileManager.getFile("banks")
         val banksConfig = banksFile!!.getConfig()
 
-        banksConfig.set(bank.name, bank)
+        banksConfig.set("${bank.name}.name", bank.name)
+        banksConfig.set("${bank.name}.owner", bank.owner)
+
+        bank.accounts.forEach { (holder, account) -> transformBankAccounts(banksConfig, holder, bank, account) }
+
+        banksConfig.set("${bank.name}.name", bank.name)
+
         banksFile.saveFile()
+    }
+
+    private fun transformBankAccounts(config: YamlConfiguration, holder: String, bank: Bank, account: Account) {
+        config.set("${bank.name}.accounts.${holder}.accountHolder", account.accountHolder)
+        config.set("${bank.name}.accounts.${holder}.balance", account.balance)
     }
 }

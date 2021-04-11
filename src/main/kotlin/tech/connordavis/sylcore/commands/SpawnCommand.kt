@@ -13,7 +13,8 @@ class SpawnCommand : Command(
     CommandInfo(
         "spawn",
         "This command lets players get to spawn and for staff to set the spawn.",
-        aliases = arrayOf("setspawn")
+        aliases = arrayOf("setspawn"),
+        permissions = arrayOf("sylcore.command.spawn", "sylcore.command.setspawn")
     )
 ) {
     private val plugin = SylCorePlugin.instance
@@ -22,14 +23,19 @@ class SpawnCommand : Command(
     override fun execute(sender: CommandSender, commandLabel: String, args: Array<String>): Boolean {
         if (sender !is Player) sender.from(Prefixes.TEST, "Only players can access that command.")
         else {
-            when (commandLabel) {
+            if (!sender.hasPermission("sylcore.command.$commandLabel")) {
+                sender.from(Prefixes.CORE, "You do not have permission to access that command.")
+                return false
+            } else when (commandLabel) {
                 "spawn" -> {
                     val serverSpawnFile = fileManager.getFile("serverSpawn")
                     val serverSpawnConfig = serverSpawnFile?.getConfig()
 
                     val spawnLocation = Location(plugin.server.getWorld(serverSpawnConfig?.getString("world")!!),
-                        serverSpawnConfig.getString("x")!!.toDouble(), serverSpawnConfig.getString("y")!!.toDouble(),
-                        serverSpawnConfig.getString("z")!!.toDouble(), serverSpawnConfig.getString("yaw")!!.toFloat(),
+                        serverSpawnConfig.getString("x")!!.toDouble(),
+                        serverSpawnConfig.getString("y")!!.toDouble(),
+                        serverSpawnConfig.getString("z")!!.toDouble(),
+                        serverSpawnConfig.getString("yaw")!!.toFloat(),
                         serverSpawnConfig.getString("pitch")!!.toFloat())
 
                     sender.teleport(spawnLocation)

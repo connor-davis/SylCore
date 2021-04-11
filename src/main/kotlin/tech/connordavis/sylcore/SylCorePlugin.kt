@@ -22,9 +22,10 @@ class SylCorePlugin : JavaPlugin() {
         lateinit var instance: SylCorePlugin private set
         lateinit var commandManager: CommandManager private set
         lateinit var fileManager: FileManager private set
-        lateinit var economy: SylEconomy private set
         lateinit var economyManager: EconomyManager private set
     }
+
+    var economy: SylEconomy
 
     init {
         instance = this
@@ -77,6 +78,10 @@ class SylCorePlugin : JavaPlugin() {
         server.servicesManager.register(Economy::class.java, economy, this, ServicePriority.Highest)
         logger.info { "Economy has been registered with Vault." }
         return true
+    }
+
+    fun getEconomyManager(): EconomyManager {
+        return economyManager
     }
 
     fun getFileManager(): FileManager {

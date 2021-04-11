@@ -17,7 +17,7 @@ class FileManager(private val plugin: JavaPlugin) {
     fun loadFiles() {
         plugin.logger.info("Loading files.")
 
-        this.files.forEach { (name, file) ->
+        this.files.forEach { (_, file) ->
             file.loadFile()
         }
 
