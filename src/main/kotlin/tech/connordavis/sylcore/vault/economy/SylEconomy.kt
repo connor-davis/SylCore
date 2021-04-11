@@ -1,9 +1,8 @@
-package tech.connordavis.sylcore.vault
+package tech.connordavis.sylcore.vault.economy
 
 import net.milkbowl.vault.economy.Economy
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.OfflinePlayer
-import tech.connordavis.sylcore.vault.economy.EconomyManager
 
 class SylEconomy : Economy {
     private val economyManager: EconomyManager = EconomyManager()
