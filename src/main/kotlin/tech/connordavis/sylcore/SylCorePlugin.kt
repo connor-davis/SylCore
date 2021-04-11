@@ -22,18 +22,16 @@ class SylCorePlugin : JavaPlugin() {
         lateinit var instance: SylCorePlugin private set
         lateinit var commandManager: CommandManager private set
         lateinit var fileManager: FileManager private set
+        lateinit var economy: SylEconomy private set
         lateinit var economyManager: EconomyManager private set
     }
-
-    var economy: SylEconomy
 
     init {
         instance = this
         commandManager = CommandManager(instance)
         fileManager = FileManager(this)
-        economyManager = EconomyManager()
-
         economy = SylEconomy()
+        economyManager = EconomyManager()
     }
 
     override fun onEnable() {
