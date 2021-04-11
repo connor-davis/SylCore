@@ -6,8 +6,8 @@ import org.bukkit.entity.Player
 import tech.connordavis.sylcore.SylCorePlugin
 import tech.connordavis.sylcore.utils.Command
 import tech.connordavis.sylcore.utils.CommandInfo
-import tech.connordavis.sylcore.utils.Message.Companion.from
 import tech.connordavis.sylcore.utils.Prefixes
+import tech.connordavis.sylcore.utils.from
 
 class SpawnCommand : Command(
     CommandInfo(
