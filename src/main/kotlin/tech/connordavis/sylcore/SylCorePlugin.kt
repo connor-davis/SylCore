@@ -61,13 +61,9 @@ class SylCorePlugin : JavaPlugin() {
 
     override fun onDisable() {
         // Files
-        fileManager.getFiles().forEach { (name, file) ->
-            file.saveFile()
-            fileManager.removeFile(name)
-        }
-
+        fileManager.getFiles().clear()
         // Commands
-        commandManager.getCommands().forEach { (name, _) -> commandManager.removeCommand(name) }
+        commandManager.getCommands().clear()
     }
 
     private fun registerEvents() {
