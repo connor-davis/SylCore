@@ -21,12 +21,9 @@ class SpawnCommand : Command(
     private val fileManager = plugin.getFileManager()
 
     override fun execute(sender: CommandSender, commandLabel: String, args: Array<String>): Boolean {
-        if (sender !is Player) sender.from(Prefixes.TEST, "Only players can access that command.")
+        if (sender !is Player) sender.from(Prefixes.CORE, "Only players can access that command.")
         else {
-            if (!sender.hasPermission("sylcore.command.$commandLabel")) {
-                sender.from(Prefixes.CORE, "You do not have permission to access that command.")
-                return false
-            } else when (commandLabel) {
+            when (commandLabel) {
                 "spawn" -> {
                     val serverSpawnFile = fileManager.getFile("serverSpawn")
                     val serverSpawnConfig = serverSpawnFile?.getConfig()
@@ -39,28 +36,39 @@ class SpawnCommand : Command(
                         serverSpawnConfig.getString("pitch")!!.toFloat())
 
                     sender.teleport(spawnLocation)
-                    sender.from(Prefixes.CORE, "You have arrived at spawn.")
+                    sender.from(Prefixes.NOTHING, "You have arrived at spawn.")
                 }
                 "setspawn" -> {
-                    val spawnLocation = Location(sender.world,
-                        sender.location.x,
-                        sender.location.y,
-                        sender.location.z,
-                        sender.location.yaw,
-                        sender.location.pitch)
+                    when {
+                        sender.hasPermission("sylcore.command.setspawn") -> {
+                            val spawnLocation = Location(sender.world,
+                                sender.location.x,
+                                sender.location.y,
+                                sender.location.z,
+                                sender.location.yaw,
+                                sender.location.pitch)
 
-                    val serverSpawnFile = fileManager.getFile("serverSpawn")
+                            val serverSpawnFile = fileManager.getFile("serverSpawn")!!
+                            val serverSpawnConfig = serverSpawnFile.getConfig()
 
-                    serverSpawnFile?.getConfig()?.set("world", spawnLocation.world?.name)
-                    serverSpawnFile?.getConfig()?.set("x", "${spawnLocation.x}")
-                    serverSpawnFile?.getConfig()?.set("y", "${spawnLocation.y}")
-                    serverSpawnFile?.getConfig()?.set("z", "${spawnLocation.z}")
-                    serverSpawnFile?.getConfig()?.set("yaw", "${spawnLocation.yaw}")
-                    serverSpawnFile?.getConfig()?.set("pitch", "${spawnLocation.pitch}")
+                            serverSpawnConfig.set("world", spawnLocation.world?.name)
+                            serverSpawnConfig.set("x", "${spawnLocation.x}")
+                            serverSpawnConfig.set("y", "${spawnLocation.y}")
+                            serverSpawnConfig.set("z", "${spawnLocation.z}")
+                            serverSpawnConfig.set("yaw", "${spawnLocation.yaw}")
+                            serverSpawnConfig.set("pitch", "${spawnLocation.pitch}")
 
-                    serverSpawnFile?.saveFile()
+                            serverSpawnFile.saveFile()
 
-                    sender.from(Prefixes.CORE, "Server spawn set at your position.")
+                            sender.from(Prefixes.CORE, "Server spawn set at your position.")
+                        }
+
+                        else -> {
+                            sender.from(Prefixes.CORE, "You do not have permission to access that command.")
+                            return false
+                        }
+                    }
+
                 }
             }
         }

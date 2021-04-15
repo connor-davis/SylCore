@@ -4,10 +4,7 @@ import net.milkbowl.vault.economy.Economy
 import net.milkbowl.vault.permission.Permission
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
-import tech.connordavis.sylcore.commands.GameModeCommand
-import tech.connordavis.sylcore.commands.RanksCommand
-import tech.connordavis.sylcore.commands.SpawnCommand
-import tech.connordavis.sylcore.commands.TimeCommand
+import tech.connordavis.sylcore.commands.*
 import tech.connordavis.sylcore.events.PlayerJoin
 import tech.connordavis.sylcore.files.*
 import tech.connordavis.sylcore.managers.CommandManager
@@ -47,6 +44,7 @@ class SylCorePlugin : JavaPlugin() {
         fileManager.addFile("banks", Banks())
         fileManager.addFile("groups", Groups())
         fileManager.addFile("players", Players())
+        fileManager.addFile("homes", Homes())
 
         fileManager.loadFiles()
 
@@ -55,6 +53,7 @@ class SylCorePlugin : JavaPlugin() {
         commandManager.addCommand("time", TimeCommand())
         commandManager.addCommand("spawn", SpawnCommand())
         commandManager.addCommand("ranks", RanksCommand())
+        commandManager.addCommand("home", HomeCommand())
 
         commandManager.registerCommands()
 
