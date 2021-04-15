@@ -4,4 +4,6 @@ enum class Prefixes(val self: String) {
     CORE("Core"),
     TEST("Test"),
     ECONOMY("Economy"),
+    RANKS("Ranks"),
+    NOTHING(""),
 }

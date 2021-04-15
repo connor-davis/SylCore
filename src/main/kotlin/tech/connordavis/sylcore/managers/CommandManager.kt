@@ -43,3 +43,4 @@ class CommandManager(private val plugin: JavaPlugin) {
         return plugin
     }
 }
+

@@ -2,6 +2,8 @@ package tech.connordavis.sylcore.vault.economy
 
 import org.bukkit.configuration.file.YamlConfiguration
 import tech.connordavis.sylcore.SylCorePlugin
+import tech.connordavis.sylcore.utils.Prefixes
+import tech.connordavis.sylcore.utils.from
 
 class EconomyManager {
     private val plugin = SylCorePlugin.instance
@@ -9,6 +11,48 @@ class EconomyManager {
 
     private val accounts: MutableMap<String, Account> = mutableMapOf()
     private val banks: MutableMap<String, Bank> = mutableMapOf()
+
+    fun loadAccounts() {
+        val accountsFile = fileManager.getFile("accounts")!!
+        val accountsConfig = accountsFile.getConfig()
+
+        for (key in accountsConfig.getKeys(false)) {
+            val accountHolder = accountsConfig.getString("$key.accountHolder")!!
+            val accountBalance = accountsConfig.getDouble("$key.balance")!!
+
+            val account = Account(accountHolder, accountBalance)
+
+            this.accounts.putIfAbsent(key, account)
+        }
+
+        plugin.server.consoleSender.from(Prefixes.ECONOMY, "Loaded ${this.accounts.size} accounts.")
+    }
+
+    fun loadBanks() {
+        val banksFile = fileManager.getFile("banks")!!
+        val banksConfig = banksFile.getConfig()
+
+        for (key in banksConfig.getKeys(false)) {
+            val bankName = banksConfig.getString("$key.name")!!
+            val bankOwner = banksConfig.getString("$key.owner")!!
+
+            val accounts: MutableMap<String, Account> = mutableMapOf()
+
+            for (name in banksConfig.getKeys(false)) {
+                accounts.putIfAbsent(name,
+                    Account(banksConfig.getString("$key.accounts.$name.accountHolder")!!,
+                        banksConfig.getDouble("$key.accounts.$name.balance")))
+            }
+
+            val bankBalance = banksConfig.getDouble("$key.balance")
+
+            val bank = Bank(bankName, bankOwner, accounts, bankBalance)
+
+            this.banks.putIfAbsent(key, bank)
+        }
+
+        plugin.server.consoleSender.from(Prefixes.ECONOMY, "Loaded ${this.banks.size} banks.")
+    }
 
     fun createAccount(holder: String) {
         this.accounts.putIfAbsent(holder, Account(holder, 0.0))
@@ -34,12 +78,7 @@ class EconomyManager {
     }
 
     fun accountExists(holder: String): Boolean {
-        return try {
-            this.accounts[holder]!!
-            true
-        } catch (exception: NullPointerException) {
-            false
-        }
+        return this.accounts.containsKey(holder)
     }
 
     private fun saveAccount(account: Account) {
@@ -86,7 +125,7 @@ class EconomyManager {
 
         bank.accounts.forEach { (holder, account) -> transformBankAccounts(banksConfig, holder, bank, account) }
 
-        banksConfig.set("${bank.name}.name", bank.name)
+        banksConfig.set("${bank.name}.balance", bank.balance)
 
         banksFile.saveFile()
     }

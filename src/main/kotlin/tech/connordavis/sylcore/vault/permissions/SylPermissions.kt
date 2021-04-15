@@ -54,7 +54,7 @@ class SylPermissions : Permission() {
     }
 
     override fun getPlayerGroups(world: String?, player: String?): Array<String> {
-        return permissionsManager.playerGroups(player!!)
+        return permissionsManager.playerGroups(player!!).toTypedArray()
     }
 
     override fun getPrimaryGroup(world: String?, player: String?): String {
@@ -62,7 +62,7 @@ class SylPermissions : Permission() {
     }
 
     override fun getGroups(): Array<String> {
-        return permissionsManager.getGroups()
+        return permissionsManager.getGroupsNames()
     }
 
     override fun hasGroupSupport(): Boolean {
