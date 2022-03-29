@@ -1,8 +1,0 @@
-name: SylCore
-main: "tech.connordavis.sylcore.SylCorePlugin"
-version: 0.0.5
-api-version: 1.16
-depend: [ "Kotlin", "Vault" ]
-description: ""
-author: "darkio_"
-website: "https://connordavis.tech"

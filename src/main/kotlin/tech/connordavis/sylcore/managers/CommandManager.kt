@@ -1,6 +1,6 @@
 package tech.connordavis.sylcore.managers
 
-import org.bukkit.craftbukkit.v1_16_R3.CraftServer
+import org.bukkit.craftbukkit.v1_18_R2.CraftServer
 import org.bukkit.plugin.java.JavaPlugin
 import tech.connordavis.sylcore.utils.Command
 
@@ -8,7 +8,7 @@ class CommandManager(private val plugin: JavaPlugin) {
     private var commands: MutableMap<String, Command> = mutableMapOf()
 
     fun addCommand(name: String, command: Command) {
-        this.commands.putIfAbsent(name, command)
+        this.commands.put(name, command)
     }
 
     fun removeCommand(name: String) {

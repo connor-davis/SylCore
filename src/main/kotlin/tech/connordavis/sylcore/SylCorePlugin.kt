@@ -16,11 +16,16 @@ import tech.connordavis.sylcore.vault.permissions.SylPermissions
 
 class SylCorePlugin : JavaPlugin() {
     companion object {
-        lateinit var instance: SylCorePlugin private set
-        lateinit var commandManager: CommandManager private set
-        lateinit var fileManager: FileManager private set
-        lateinit var economyManager: EconomyManager private set
-        lateinit var permissionsManager: PermissionsManager private set
+        lateinit var instance: SylCorePlugin
+            private set
+        lateinit var commandManager: CommandManager
+            private set
+        lateinit var fileManager: FileManager
+            private set
+        lateinit var economyManager: EconomyManager
+            private set
+        lateinit var permissionsManager: PermissionsManager
+            private set
     }
 
     var economy: SylEconomy
@@ -38,24 +43,10 @@ class SylCorePlugin : JavaPlugin() {
 
     override fun onEnable() {
         // Files
-        fileManager.addFile("config", Config())
-        fileManager.addFile("serverSpawn", ServerSpawn())
-        fileManager.addFile("accounts", Accounts())
-        fileManager.addFile("banks", Banks())
-        fileManager.addFile("groups", Groups())
-        fileManager.addFile("players", Players())
-        fileManager.addFile("homes", Homes())
-
-        fileManager.loadFiles()
+        registerFiles();
 
         // Commands
-        commandManager.addCommand("gamemode", GameModeCommand())
-        commandManager.addCommand("time", TimeCommand())
-        commandManager.addCommand("spawn", SpawnCommand())
-        commandManager.addCommand("ranks", RanksCommand())
-        commandManager.addCommand("home", HomeCommand())
-
-        commandManager.registerCommands()
+        registerCommands();
 
         // Economy
         economyManager.loadAccounts()
@@ -67,8 +58,8 @@ class SylCorePlugin : JavaPlugin() {
 
         if (!setupVault()) {
             logger.info { "Plugin disabled because Vault was not found." }
-            server.pluginManager.disablePlugin(this);
-            return;
+            server.pluginManager.disablePlugin(this)
+            return
         }
 
         registerEvents()
@@ -85,6 +76,29 @@ class SylCorePlugin : JavaPlugin() {
         server.pluginManager.registerEvents(PlayerJoin(), this)
     }
 
+    private fun registerFiles() {
+        fileManager.addFile("config", Config())
+        fileManager.addFile("serverSpawn", ServerSpawn())
+        fileManager.addFile("accounts", Accounts())
+        fileManager.addFile("banks", Banks())
+        fileManager.addFile("groups", Groups())
+        fileManager.addFile("players", Players())
+        fileManager.addFile("homes", Homes())
+
+        fileManager.loadFiles()
+    }
+
+    private fun registerCommands() {
+        commandManager.addCommand("gamemode", GameModeCommand())
+        commandManager.addCommand("time", TimeCommand())
+        commandManager.addCommand("spawn", SpawnCommand())
+        commandManager.addCommand("ranks", RanksCommand())
+        commandManager.addCommand("home", HomeCommand())
+        commandManager.addCommand("staffchat", StaffChatCommand())
+
+        commandManager.registerCommands()
+    }
+
     private fun setupVault(): Boolean {
         if (server.pluginManager.getPlugin("Vault") == null) {
             return false
@@ -93,7 +107,12 @@ class SylCorePlugin : JavaPlugin() {
         server.servicesManager.register(Economy::class.java, economy, this, ServicePriority.Highest)
         logger.info { "Economy has been registered with Vault." }
 
-        server.servicesManager.register(Permission::class.java, permissions, this, ServicePriority.Highest)
+        server.servicesManager.register(
+                Permission::class.java,
+                permissions,
+                this,
+                ServicePriority.Highest
+        )
         logger.info { "Permissions has been registered with Vault." }
 
         return true

@@ -18,11 +18,11 @@ class EconomyManager {
 
         for (key in accountsConfig.getKeys(false)) {
             val accountHolder = accountsConfig.getString("$key.accountHolder")!!
-            val accountBalance = accountsConfig.getDouble("$key.balance")!!
+            val accountBalance = accountsConfig.getDouble("$key.balance")
 
             val account = Account(accountHolder, accountBalance)
 
-            this.accounts.putIfAbsent(key, account)
+            this.accounts.put(key, account)
         }
 
         plugin.server.consoleSender.from(Prefixes.ECONOMY, "Loaded ${this.accounts.size} accounts.")
@@ -39,7 +39,7 @@ class EconomyManager {
             val accounts: MutableMap<String, Account> = mutableMapOf()
 
             for (name in banksConfig.getKeys(false)) {
-                accounts.putIfAbsent(name,
+                accounts.put(name,
                     Account(banksConfig.getString("$key.accounts.$name.accountHolder")!!,
                         banksConfig.getDouble("$key.accounts.$name.balance")))
             }
@@ -48,14 +48,14 @@ class EconomyManager {
 
             val bank = Bank(bankName, bankOwner, accounts, bankBalance)
 
-            this.banks.putIfAbsent(key, bank)
+            this.banks.put(key, bank)
         }
 
         plugin.server.consoleSender.from(Prefixes.ECONOMY, "Loaded ${this.banks.size} banks.")
     }
 
     fun createAccount(holder: String) {
-        this.accounts.putIfAbsent(holder, Account(holder, 0.0))
+        this.accounts.put(holder, Account(holder, 0.0))
         saveAccount(this.accounts[holder]!!)
     }
 
@@ -93,11 +93,11 @@ class EconomyManager {
 
     fun createBank(name: String, owner: String) {
         val bankAccounts: MutableMap<String, Account> = mutableMapOf()
-        bankAccounts.putIfAbsent(owner, this.accounts[owner]!!)
+        bankAccounts.put(owner, this.accounts[owner]!!)
 
         val bank = Bank(name, owner, bankAccounts)
 
-        this.banks.putIfAbsent(name, bank)
+        this.banks.put(name, bank)
         saveBank(bank)
     }
 
