@@ -193,7 +193,7 @@ class PermissionsManager {
 
             val player = Player(playerName, playerGroups, playerPermissions)
 
-            this.players.putIfAbsent(key, player)
+            this.players.put(key, player)
         }
 
         plugin.server.consoleSender.from(Prefixes.RANKS, "Loaded ${this.players.size} players.")
@@ -209,7 +209,7 @@ class PermissionsManager {
 
             val group = Group(groupName, groupPermissions)
 
-            this.groups.putIfAbsent(key, group)
+            this.groups.put(key, group)
         }
 
         plugin.server.consoleSender.from(Prefixes.RANKS, "Loaded ${this.groups.size} ranks.")
