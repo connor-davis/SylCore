@@ -1,4 +1,3 @@
-// More about the setup here: https://github.com/DevSrSouza/KotlinBukkitAPI/wiki/Getting-Started
 plugins {
     kotlin("jvm") version "1.4.0"
     kotlin("plugin.serialization") version "1.4.0"
@@ -21,6 +20,7 @@ repositories {
    or if you're using the Bukkit API.
    */
     maven("https://oss.sonatype.org/content/repositories/snapshots")
+    maven("https://oss.sonatype.org/content/repositories/central")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     mavenLocal() // This is needed for CraftBukkit and Spigot.
     jcenter()
@@ -31,23 +31,23 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib-jdk8"))
+    // compileOnly("org.spigotmc:spigot:1.18.2-R0.1-SNAPSHOT")
 
 //    minecraft
-//    compileOnly("org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT")
 //    compileOnly("org.bukkit:bukkit:1.16.2-R0.1-SNAPSHOT")
-//    compileOnly("org.spigotmc:spigot:1.16.2-R0.1-SNAPSHOT")
 //    compileOnly("org.bukkit:craftbukkit:1.16.2-R0.1-SNAPSHOT")
 
     //plugins
     val transitive = Action<ExternalModuleDependency> { isTransitive = false }
+    compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT", transitive)
     compileOnly("com.github.MilkBowl:VaultAPI:1.7", transitive)
 }
 
 bukkit {
     main = "tech.connordavis.sylcore.SylCorePlugin"
     depend = listOf("Kotlin", "Vault")
-    description = ""
-    author = "darkio_"
+    description = "This is a core plugin that adds functionality and features to a server."
+    author = "lupinmc"
     website = "https://connordavis.tech"
 }
 
