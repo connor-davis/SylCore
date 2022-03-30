@@ -16,12 +16,18 @@ class PlayerJoin : Listener {
 
     @EventHandler
     fun playerJoin(event: PlayerJoinEvent) {
+        plugin.server.consoleSender.from(
+                Prefixes.NOTHING,
+                "${event.player.displayName} joined the server${checkFirstJoin(event.player)}."
+        )
+
         checkEconomy(event.player.name)
         checkGroup(event.player.name)
 
         // Set Player Permissions
         permissionsManager.getPlayers().forEach { (name, player) ->
-            val attachment: PermissionAttachment = plugin.server.getPlayer(name)!!.addAttachment(plugin)
+            val attachment: PermissionAttachment =
+                    plugin.server.getPlayer(name)!!.addAttachment(plugin)
             player.permissions.forEach { permission ->
                 attachment.setPermission(permission, true)
                 if (permission == "*") event.player.isOp = true
@@ -38,10 +44,15 @@ class PlayerJoin : Listener {
         }
     }
 
+    private fun checkFirstJoin(player: org.bukkit.entity.Player): String {
+        if (!player.hasPlayedBefore()) return " for the first time, welcome them." else return ""
+    }
+
     private fun checkGroup(name: String) {
-        if (!permissionsManager.playerExists(name) && permissionsManager.createPlayer(Player(name,
-                mutableListOf(),
-                mutableListOf()))
+        if (!permissionsManager.playerExists(name) &&
+                        permissionsManager.createPlayer(
+                                Player(name, mutableListOf(), mutableListOf())
+                        )
         ) {
             if (!permissionsManager.inGroup(name, "default")) {
                 permissionsManager.addPlayerGroup(name, "default")

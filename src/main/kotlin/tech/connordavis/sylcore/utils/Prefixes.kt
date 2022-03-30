@@ -5,5 +5,6 @@ enum class Prefixes(val self: String) {
     TEST("Test"),
     ECONOMY("Economy"),
     RANKS("Ranks"),
+    STAFF_CHAT("Staff Chat"),
     NOTHING(""),
 }

@@ -9,6 +9,7 @@ import tech.connordavis.sylcore.events.PlayerJoin
 import tech.connordavis.sylcore.files.*
 import tech.connordavis.sylcore.managers.CommandManager
 import tech.connordavis.sylcore.managers.FileManager
+import tech.connordavis.sylcore.managers.StaffChatManager
 import tech.connordavis.sylcore.vault.economy.EconomyManager
 import tech.connordavis.sylcore.vault.economy.SylEconomy
 import tech.connordavis.sylcore.vault.permissions.PermissionsManager
@@ -26,6 +27,8 @@ class SylCorePlugin : JavaPlugin() {
             private set
         lateinit var permissionsManager: PermissionsManager
             private set
+        lateinit var staffChatManager: StaffChatManager
+            private set
     }
 
     var economy: SylEconomy
@@ -34,11 +37,12 @@ class SylCorePlugin : JavaPlugin() {
     init {
         instance = this
         commandManager = CommandManager(instance)
-        fileManager = FileManager(this)
+        fileManager = FileManager(instance)
         economy = SylEconomy()
         economyManager = EconomyManager()
         permissions = SylPermissions()
         permissionsManager = PermissionsManager()
+        staffChatManager = StaffChatManager(instance)
     }
 
     override fun onEnable() {
@@ -70,6 +74,8 @@ class SylCorePlugin : JavaPlugin() {
         fileManager.getFiles().clear()
         // Commands
         commandManager.getCommands().clear()
+        // Staff Chat Players
+        staffChatManager.getStaffChatPlayers().clear()
     }
 
     private fun registerEvents() {
@@ -128,5 +134,9 @@ class SylCorePlugin : JavaPlugin() {
 
     fun getFileManager(): FileManager {
         return fileManager
+    }
+
+    fun getStaffChatManager(): StaffChatManager {
+        return staffChatManager
     }
 }
