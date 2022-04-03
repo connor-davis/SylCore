@@ -5,12 +5,14 @@ import net.milkbowl.vault.permission.Permission
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
 import tech.connordavis.sylcore.commands.*
-import tech.connordavis.sylcore.events.PlayerJoin
 import tech.connordavis.sylcore.events.Chat
+import tech.connordavis.sylcore.events.PlayerJoin
 import tech.connordavis.sylcore.files.*
 import tech.connordavis.sylcore.managers.CommandManager
 import tech.connordavis.sylcore.managers.FileManager
 import tech.connordavis.sylcore.managers.StaffChatManager
+import tech.connordavis.sylcore.modules.SylModuleLoader
+import tech.connordavis.sylcore.modules.SylModuleManager
 import tech.connordavis.sylcore.utils.Prefixes
 import tech.connordavis.sylcore.utils.from
 import tech.connordavis.sylcore.vault.economy.EconomyManager
@@ -32,6 +34,8 @@ class SylCorePlugin : JavaPlugin() {
             private set
         lateinit var staffChatManager: StaffChatManager
             private set
+        lateinit var moduleManager: SylModuleManager
+            private set
     }
 
     var economy: SylEconomy
@@ -46,9 +50,52 @@ class SylCorePlugin : JavaPlugin() {
         permissions = SylPermissions()
         permissionsManager = PermissionsManager()
         staffChatManager = StaffChatManager(instance)
+        moduleManager = SylModuleManager()
+    }
+
+    override fun onLoad() {
+        /**
+         * Module Loader
+         * Here we load SylModules
+         */
+        SylModuleLoader
     }
 
     override fun onEnable() {
+        /**
+         * Module Manager
+         * Here we enable SylModules
+         */
+        server.consoleSender.from(Prefixes.MODULE_MANAGER, "Enabling modules.")
+
+        var enabledCount = 0
+
+        moduleManager.moduleList.forEach { module ->
+            run {
+                if (module.description.dependencies.isNotEmpty()) {
+                    module.description.dependencies.forEach { dependency ->
+                        if (!moduleManager.exists(dependency)) {
+                            server.consoleSender.from(Prefixes.MODULE_MANAGER,
+                                "$9$dependency &7does not exist for module &9${module.description.name}&7, disabling plugin.")
+                            moduleManager.remove(module)
+
+                            return@run
+                        } else {
+                            module.onEnable()
+
+                            enabledCount++
+                        }
+                    }
+                } else {
+                    module.onEnable()
+
+                    enabledCount++
+                }
+            }
+        }
+
+        server.consoleSender.from(Prefixes.MODULE_MANAGER, "Enabled &9${enabledCount} &7modules.")
+
         // Files
         registerFiles();
 
@@ -73,6 +120,22 @@ class SylCorePlugin : JavaPlugin() {
     }
 
     override fun onDisable() {
+        /**
+         * Module Manager
+         * Here we disable SylModules
+         */
+        server.consoleSender.from(Prefixes.MODULE_MANAGER, "Disabling modules.")
+
+        var disabledCount = 0
+
+        moduleManager.moduleList.forEach { module ->
+            module.onDisable()
+
+            disabledCount++
+        }
+
+        server.consoleSender.from(Prefixes.MODULE_MANAGER, "Disabled &9${disabledCount} &7modules.")
+
         // Files
         fileManager.getFiles().clear()
         // Commands
@@ -137,5 +200,9 @@ class SylCorePlugin : JavaPlugin() {
 
     fun getStaffChatManager(): StaffChatManager {
         return staffChatManager
+    }
+
+    fun getModuleManager(): SylModuleManager {
+        return moduleManager
     }
 }
