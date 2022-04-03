@@ -1,5 +1,6 @@
 package tech.connordavis.sylcore.events
 
+import net.md_5.bungee.api.ChatColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -16,6 +17,8 @@ class PlayerJoin : Listener {
 
     @EventHandler
     fun playerJoin(event: PlayerJoinEvent) {
+        event.joinMessage = ChatColor.translateAlternateColorCodes('&', "&9> ${event.player.displayName} &7joined the server${checkFirstJoin(event.player)}.")
+
         plugin.server.consoleSender.from(
                 Prefixes.NOTHING,
                 "${event.player.displayName} joined the server${checkFirstJoin(event.player)}."
@@ -45,7 +48,7 @@ class PlayerJoin : Listener {
     }
 
     private fun checkFirstJoin(player: org.bukkit.entity.Player): String {
-        if (!player.hasPlayedBefore()) return " for the first time, welcome them." else return ""
+        if (!player.hasPlayedBefore()) return " for the first time, welcome them" else return ""
     }
 
     private fun checkGroup(name: String) {

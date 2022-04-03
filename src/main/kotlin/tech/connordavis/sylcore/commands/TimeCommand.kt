@@ -14,7 +14,7 @@ class TimeCommand : Command(CommandInfo(
     aliases = arrayOf("day", "night", "midnight", "afternoon", "dawn")
 )) {
     override fun execute(sender: CommandSender, commandLabel: String, args: Array<String>): Boolean {
-        if (!sender.hasPermission("sylcore.command.$commandLabel")) {
+        if (!checkPermissions(sender, commandLabel)) {
             sender.from(Prefixes.CORE, "You do not have permission to access that command.")
             return false
         } else {

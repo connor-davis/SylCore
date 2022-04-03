@@ -23,7 +23,7 @@ class SpawnCommand : Command(
     override fun execute(sender: CommandSender, commandLabel: String, args: Array<String>): Boolean {
         if (sender !is Player) sender.from(Prefixes.CORE, "Only players can access that command.")
         else {
-            when (commandLabel) {
+            if (checkPermissions(sender, commandLabel)) when (commandLabel) {
                 "spawn" -> {
                     val serverSpawnFile = fileManager.getFile("serverSpawn")
                     val serverSpawnConfig = serverSpawnFile?.getConfig()
@@ -39,37 +39,30 @@ class SpawnCommand : Command(
                     sender.from(Prefixes.NOTHING, "You have arrived at spawn.")
                 }
                 "setspawn" -> {
-                    when {
-                        sender.hasPermission("sylcore.command.setspawn") -> {
-                            val spawnLocation = Location(sender.world,
-                                sender.location.x,
-                                sender.location.y,
-                                sender.location.z,
-                                sender.location.yaw,
-                                sender.location.pitch)
+                    val spawnLocation = Location(sender.world,
+                        sender.location.x,
+                        sender.location.y,
+                        sender.location.z,
+                        sender.location.yaw,
+                        sender.location.pitch)
 
-                            val serverSpawnFile = fileManager.getFile("serverSpawn")!!
-                            val serverSpawnConfig = serverSpawnFile.getConfig()
+                    val serverSpawnFile = fileManager.getFile("serverSpawn")!!
+                    val serverSpawnConfig = serverSpawnFile.getConfig()
 
-                            serverSpawnConfig.set("world", spawnLocation.world?.name)
-                            serverSpawnConfig.set("x", "${spawnLocation.x}")
-                            serverSpawnConfig.set("y", "${spawnLocation.y}")
-                            serverSpawnConfig.set("z", "${spawnLocation.z}")
-                            serverSpawnConfig.set("yaw", "${spawnLocation.yaw}")
-                            serverSpawnConfig.set("pitch", "${spawnLocation.pitch}")
+                    serverSpawnConfig.set("world", spawnLocation.world?.name)
+                    serverSpawnConfig.set("x", "${spawnLocation.x}")
+                    serverSpawnConfig.set("y", "${spawnLocation.y}")
+                    serverSpawnConfig.set("z", "${spawnLocation.z}")
+                    serverSpawnConfig.set("yaw", "${spawnLocation.yaw}")
+                    serverSpawnConfig.set("pitch", "${spawnLocation.pitch}")
 
-                            serverSpawnFile.saveFile()
+                    serverSpawnFile.saveFile()
 
-                            sender.from(Prefixes.CORE, "Server spawn set at your position.")
-                        }
-
-                        else -> {
-                            sender.from(Prefixes.CORE, "You do not have permission to access that command.")
-                            return false
-                        }
-                    }
-
+                    sender.from(Prefixes.CORE, "Server spawn set at your position.")
                 }
+            } else {
+                sender.from(Prefixes.CORE, "You do not have permission to access that command.")
+                return false
             }
         }
         return false

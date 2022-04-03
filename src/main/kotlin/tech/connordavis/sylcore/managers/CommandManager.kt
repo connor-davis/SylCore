@@ -8,7 +8,7 @@ class CommandManager(private val plugin: JavaPlugin) {
     private var commands: MutableMap<String, Command> = mutableMapOf()
 
     fun addCommand(name: String, command: Command) {
-        this.commands.put(name, command)
+        this.commands[name] = command
     }
 
     fun removeCommand(name: String) {

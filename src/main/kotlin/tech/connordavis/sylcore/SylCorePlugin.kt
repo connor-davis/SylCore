@@ -6,10 +6,13 @@ import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
 import tech.connordavis.sylcore.commands.*
 import tech.connordavis.sylcore.events.PlayerJoin
+import tech.connordavis.sylcore.events.Chat
 import tech.connordavis.sylcore.files.*
 import tech.connordavis.sylcore.managers.CommandManager
 import tech.connordavis.sylcore.managers.FileManager
 import tech.connordavis.sylcore.managers.StaffChatManager
+import tech.connordavis.sylcore.utils.Prefixes
+import tech.connordavis.sylcore.utils.from
 import tech.connordavis.sylcore.vault.economy.EconomyManager
 import tech.connordavis.sylcore.vault.economy.SylEconomy
 import tech.connordavis.sylcore.vault.permissions.PermissionsManager
@@ -61,7 +64,7 @@ class SylCorePlugin : JavaPlugin() {
         permissionsManager.loadGroups()
 
         if (!setupVault()) {
-            logger.info { "Plugin disabled because Vault was not found." }
+            server.consoleSender.from(Prefixes.CORE, "Plugin disabled because Vault was not found.")
             server.pluginManager.disablePlugin(this)
             return
         }
@@ -80,6 +83,7 @@ class SylCorePlugin : JavaPlugin() {
 
     private fun registerEvents() {
         server.pluginManager.registerEvents(PlayerJoin(), this)
+        server.pluginManager.registerEvents(Chat, this)
     }
 
     private fun registerFiles() {
@@ -111,15 +115,10 @@ class SylCorePlugin : JavaPlugin() {
         }
 
         server.servicesManager.register(Economy::class.java, economy, this, ServicePriority.Highest)
-        logger.info { "Economy has been registered with Vault." }
+        server.consoleSender.from(Prefixes.CORE, "Economy has been registered with Vault.")
 
-        server.servicesManager.register(
-                Permission::class.java,
-                permissions,
-                this,
-                ServicePriority.Highest
-        )
-        logger.info { "Permissions has been registered with Vault." }
+        server.servicesManager.register(Permission::class.java, permissions, this, ServicePriority.Highest)
+        server.consoleSender.from(Prefixes.CORE, "Permissions has been registered with Vault.")
 
         return true
     }

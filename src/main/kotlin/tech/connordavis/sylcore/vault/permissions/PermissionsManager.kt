@@ -176,6 +176,7 @@ class PermissionsManager {
         val groupsFile = fileManager.getFile("groups")!!
         val groupsConfig = groupsFile.getConfig()
 
+        groupsConfig.set("${group.name}.prefix", group.prefix)
         groupsConfig.set("${group.name}.name", group.name)
         groupsConfig.set("${group.name}.permissions", group.permissions)
 
@@ -193,7 +194,7 @@ class PermissionsManager {
 
             val player = Player(playerName, playerGroups, playerPermissions)
 
-            this.players.put(key, player)
+            this.players[key] = player
         }
 
         plugin.server.consoleSender.from(Prefixes.RANKS, "Loaded ${this.players.size} players.")
@@ -204,12 +205,13 @@ class PermissionsManager {
         val groupsConfig = groupsFile.getConfig()
 
         for (key in groupsConfig.getKeys(false)) {
+            val groupPrefix = groupsConfig.getString("$key.prefix")!!
             val groupName = groupsConfig.getString("$key.name")!!
             val groupPermissions = groupsConfig.getStringList("$key.permissions")
 
-            val group = Group(groupName, groupPermissions)
+            val group = Group(groupPrefix, groupName, groupPermissions)
 
-            this.groups.put(key, group)
+            this.groups[key] = group
         }
 
         plugin.server.consoleSender.from(Prefixes.RANKS, "Loaded ${this.groups.size} ranks.")

@@ -7,7 +7,7 @@ class FileManager(private val plugin: JavaPlugin) {
     private var files: MutableMap<String, YamlFile> = mutableMapOf()
 
     fun addFile(name: String, file: YamlFile) {
-        this.files.put(name, file)
+        this.files[name] = file
     }
 
     fun removeFile(name: String) {

@@ -16,7 +16,7 @@ class RanksCommand : Command(CommandInfo(
     private val permissionsManager = plugin.getPermissionsManager()
 
     override fun execute(sender: CommandSender, commandLabel: String, args: Array<out String>): Boolean {
-        if (!sender.hasPermission("sylcore.command.$commandLabel")) {
+        if (!checkPermissions(sender, commandLabel)) {
             sender.from(Prefixes.CORE, "You do not have permission to access that command.")
             return false
         } else when (commandLabel) {
@@ -55,7 +55,7 @@ class RanksCommand : Command(CommandInfo(
                         "addRank" -> {
                             if (args.size > 1) {
                                 val rankName = args[1]
-                                val rank = Group(rankName, mutableListOf())
+                                val rank = Group(rankName, rankName, mutableListOf())
 
                                 if (permissionsManager.createGroup(rank)) sender.from(Prefixes.RANKS,
                                     "$rankName rank created successfully.")
@@ -76,12 +76,51 @@ class RanksCommand : Command(CommandInfo(
                                 sender.from(Prefixes.RANKS, "Please specify the rank name.")
                             }
                         }
+                        "addPrefix" -> {
+                            if (args.size > 2) {
+                                val rank = args[1]
+                                val prefix = args[2]
+
+                                if (!permissionsManager.getGroups().containsKey(rank)) {
+                                    sender.from(Prefixes.RANKS, "The rank does not exist.")
+
+                                    return false
+                                } else {
+                                    permissionsManager.getGroups()[rank]!!.prefix = prefix
+
+                                    sender.from(Prefixes.RANKS, "Added the prefix $prefix &7to rank &9$rank.")
+                                }
+                            } else {
+                                sender.from(Prefixes.RANKS, "Please specify the rank name and prefix.")
+                            }
+                        }
+                        "removePrefix" -> {
+                            if (args.size > 1) {
+                                val rank = args[1]
+
+                                if (!permissionsManager.getGroups().containsKey(rank)) {
+                                    sender.from(Prefixes.RANKS, "The rank does not exist.")
+
+                                    return false
+                                } else {
+                                    val prefix = permissionsManager.getGroups()[rank]!!.prefix
+
+                                    permissionsManager.getGroups()[rank]!!.prefix = rank
+
+                                    sender.from(Prefixes.RANKS, "Removed the prefix $prefix &7from rank &9$rank.")
+                                }
+                            } else {
+                                sender.from(Prefixes.RANKS, "Please specify the rank name and prefix.")
+                            }
+                        }
                     }
                 } else {
                     sender.from(Prefixes.RANKS, "Incorrect usage, please use:")
                     sender.from(Prefixes.NOTHING,
                         "/ranks <addPermission/removePermission> <rankName> <permission>")
                     sender.from(Prefixes.NOTHING, "/ranks <addRank/removeRank> <rankName>")
+                    sender.from(Prefixes.NOTHING, "/ranks <addPrefix> <rankName> <prefix>")
+                    sender.from(Prefixes.NOTHING, "/ranks <removePrefix> <rankName>")
                 }
             }
             "players" -> {

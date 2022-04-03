@@ -9,25 +9,25 @@ import tech.connordavis.sylcore.utils.Prefixes
 import tech.connordavis.sylcore.utils.from
 
 class StaffChatCommand :
-        Command(CommandInfo("staffchat", "Staff Chat Commands", aliases = arrayOf("sc"))) {
+    Command(CommandInfo("staffchat", "Staff Chat Commands", aliases = arrayOf("sc"))) {
     private val plugin = SylCorePlugin.instance
     private val permissionsManager = plugin.getPermissionsManager()
     private val staffChatManager = plugin.getStaffChatManager()
 
     override fun execute(
-            sender: CommandSender,
-            commandLabel: String,
-            args: Array<String>
+        sender: CommandSender,
+        commandLabel: String,
+        args: Array<String>,
     ): Boolean {
-        if (!sender.hasPermission("sylcore.command.$commandLabel")) {
+        if (!checkPermissions(sender, commandLabel)) {
             sender.from(Prefixes.CORE, "You do not have permission to access that command.")
             return false
         } else {
             if (sender is Player)
-                    when (commandLabel) {
-                        "staffchat" -> performSubcommands(sender, args)
-                        "sc" -> performSubcommands(sender, args)
-                    }
+                when (commandLabel) {
+                    "staffchat" -> performSubcommands(sender, args)
+                    "sc" -> performSubcommands(sender, args)
+                }
             else {
                 sender.from(Prefixes.CORE, "Only players can use this command.")
                 return false
@@ -37,52 +37,50 @@ class StaffChatCommand :
         return false
     }
 
-    fun performSubcommands(sender: Player, args: Array<String>) {
-        when (args[1]) {
+    private fun performSubcommands(sender: Player, args: Array<String>) {
+        if (args.isNotEmpty()) when (args[0]) {
             "joinChannel" -> {
-                val channel = args[0]
-                val rank = permissionsManager.playerGroups(sender.name).get(0)
+                val rank = permissionsManager.playerGroups(sender.name).last()
 
-                if (channel.isNullOrEmpty()) {
-                    sender.from(Prefixes.STAFF_CHAT, "Joining $rank chat channel.")
-
-                    staffChatManager.addStaffChatPlayer(rank, sender)
-
-                    sender.from(Prefixes.STAFF_CHAT, "Joined $rank chat channel.")
-                } else {
-                    sender.from(Prefixes.STAFF_CHAT, "Joining $rank chat channel.")
+                if (args.size > 1) {
+                    val channel = args[1]
 
                     staffChatManager.addStaffChatPlayer(channel, sender)
+
+                    sender.from(Prefixes.STAFF_CHAT, "Joined $channel chat channel.")
+                } else {
+                    staffChatManager.addStaffChatPlayer(rank, sender)
 
                     sender.from(Prefixes.STAFF_CHAT, "Joined $rank chat channel")
                 }
             }
             "leaveChannel" -> {
-                val channel = args[0]
-                val rank = permissionsManager.playerGroups(sender.name).get(0)
+                val rank = permissionsManager.playerGroups(sender.name).last()
 
-                if (channel.isNullOrEmpty()) {
-                    sender.from(Prefixes.STAFF_CHAT, "Leaving $rank chat channel.")
+                if (args.size > 1) {
+                    val channel = args[1]
 
-                    staffChatManager.addStaffChatPlayer(rank, sender)
+                    staffChatManager.removeStaffChatPlayer(channel, sender)
 
-                    sender.from(Prefixes.STAFF_CHAT, "Left $rank chat channel.")
+                    sender.from(Prefixes.STAFF_CHAT, "Left $channel chat channel.")
                 } else {
-                    sender.from(Prefixes.STAFF_CHAT, "Leaving $rank chat channel.")
-
-                    staffChatManager.addStaffChatPlayer(channel, sender)
+                    staffChatManager.removeStaffChatPlayer(rank, sender)
 
                     sender.from(Prefixes.STAFF_CHAT, "Left $rank chat channel")
                 }
             }
+        } else {
+            sender.from(Prefixes.STAFF_CHAT, "Incorrect usage, please use:")
+            sender.from(Prefixes.NOTHING,
+                "/staffchat <joinChannel/leaveChannel> [channelName]")
         }
     }
 
     override fun onTabComplete(
-            sender: CommandSender,
-            command: org.bukkit.command.Command,
-            commandLabel: String,
-            args: Array<out String>,
+        sender: CommandSender,
+        command: org.bukkit.command.Command,
+        commandLabel: String,
+        args: Array<out String>,
     ): MutableList<String> {
         return mutableListOf("day", "night", "midnight", "afternoon", "dawn")
     }

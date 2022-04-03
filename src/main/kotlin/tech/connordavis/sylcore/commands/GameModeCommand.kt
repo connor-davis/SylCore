@@ -8,47 +8,46 @@ import tech.connordavis.sylcore.utils.CommandInfo
 import tech.connordavis.sylcore.utils.Prefixes
 import tech.connordavis.sylcore.utils.from
 
-class GameModeCommand : Command(
-    CommandInfo(
-        "gamemode",
-        "This command lets you change your gamemode.",
-        aliases = arrayOf("creative", "survival", "spectator", "adventure", "gmc", "gms", "gmspc", "gma"),
-        permissions = arrayOf("sylcore.command.gamemode")
-    )
-) {
+class GameModeCommand : Command(CommandInfo("gamemode",
+    "This command lets you change your gamemode.",
+    aliases = arrayOf("creative", "survival", "spectator", "adventure", "gmc", "gms", "gmspc", "gma"),
+    permissions = arrayOf("sylcore.command.gamemode",
+        "sylcore.command.creative",
+        "sylcore.command.survival",
+        "sylcore.command.spectator",
+        "sylcore.command.adventure",
+        "sylcore.command.gmc",
+        "sylcore.command.gms",
+        "sylcore.command.gmspc",
+        "sylcore.command.gma"))) {
     override fun execute(sender: CommandSender, commandLabel: String, args: Array<String>): Boolean {
         if (sender !is Player) sender.sendMessage("Only players can use this command.")
         else {
-            when {
-                sender.hasPermission("sylcore.command.gamemode") -> when (commandLabel) {
-                    "gamemode" -> {
-                        when (args[0]) {
-                            "creative" -> sender.gameMode = GameMode.CREATIVE
-                            "survival" -> sender.gameMode = GameMode.SURVIVAL
-                            "spectator" -> sender.gameMode = GameMode.SPECTATOR
-                            "adventure" -> sender.gameMode = GameMode.ADVENTURE
-                        }
+            if (checkPermissions(sender, commandLabel)) when (commandLabel) {
+                "gamemode" -> {
+                    when (args[0]) {
+                        "creative" -> sender.gameMode = GameMode.CREATIVE
+                        "survival" -> sender.gameMode = GameMode.SURVIVAL
+                        "spectator" -> sender.gameMode = GameMode.SPECTATOR
+                        "adventure" -> sender.gameMode = GameMode.ADVENTURE
                     }
                 }
 
-                sender.hasPermission("sylcore.command.$commandLabel") -> when (commandLabel) {
-                    "creative" -> sender.gameMode = GameMode.CREATIVE
-                    "gmc" -> sender.gameMode = GameMode.CREATIVE
+                "creative" -> sender.gameMode = GameMode.CREATIVE
+                "gmc" -> sender.gameMode = GameMode.CREATIVE
 
-                    "survival" -> sender.gameMode = GameMode.SURVIVAL
-                    "gms" -> sender.gameMode = GameMode.SURVIVAL
+                "survival" -> sender.gameMode = GameMode.SURVIVAL
+                "gms" -> sender.gameMode = GameMode.SURVIVAL
 
-                    "spectator" -> sender.gameMode = GameMode.SPECTATOR
-                    "gmspc" -> sender.gameMode = GameMode.SPECTATOR
+                "spectator" -> sender.gameMode = GameMode.SPECTATOR
+                "gmspc" -> sender.gameMode = GameMode.SPECTATOR
 
-                    "adventure" -> sender.gameMode = GameMode.ADVENTURE
-                    "gma" -> sender.gameMode = GameMode.ADVENTURE
-                }
-
-                else -> {
-                    sender.from(Prefixes.CORE, "You do not have permission to access that command.")
-                    return false
-                }
+                "adventure" -> sender.gameMode = GameMode.ADVENTURE
+                "gma" -> sender.gameMode = GameMode.ADVENTURE
+            }
+            else {
+                sender.from(Prefixes.CORE, "You do not have permission to access that command.")
+                return false
             }
         }
         return false
