@@ -1,6 +1,5 @@
 package tech.connordavis.sylcore.network
 
-import org.bukkit.configuration.file.YamlConfiguration
 import tech.connordavis.sylcore.SylCorePlugin
 import tech.connordavis.sylcore.managers.FileManager
 import tech.connordavis.sylcore.utils.YamlFile
@@ -27,5 +26,9 @@ object Network {
         dataIn = DataInputStream(socket.getInputStream())
 
         return this
+    }
+
+    fun close() {
+        socket.close()
     }
 }

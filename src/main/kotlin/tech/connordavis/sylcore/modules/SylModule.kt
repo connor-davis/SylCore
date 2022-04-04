@@ -6,20 +6,18 @@ import tech.connordavis.sylcore.managers.CommandManager
 import tech.connordavis.sylcore.managers.FileManager
 import tech.connordavis.sylcore.managers.StaffChatManager
 import tech.connordavis.sylcore.network.Network
-import tech.connordavis.sylcore.utils.from
+import tech.connordavis.sylcore.utils.Logger
 import tech.connordavis.sylcore.vault.economy.EconomyManager
 import tech.connordavis.sylcore.vault.permissions.PermissionsManager
-import java.util.logging.Logger
 
 abstract class SylModule : ISylModule {
     private val core = SylCorePlugin.instance
     lateinit var description: SylModuleDescription
 
-    val logger: Logger = core.logger
-    val server: Server = core.server
-    private val consoleSender = server.consoleSender
+    lateinit var network: Network
+    private lateinit var logger: Logger
 
-    val network: Network = core.getNetwork()
+    val server: Server = core.server
     val fileManager: FileManager = core.getFileManager()
     val commandManager: CommandManager = core.getCommandManager()
     val economyManager: EconomyManager = core.getEconomyManager()
@@ -29,18 +27,28 @@ abstract class SylModule : ISylModule {
     override fun onLoad() {
         super.onLoad()
 
-        consoleSender.from(description.name, "${description.name} v${description.version} loaded.")
+        logger = Logger(description.name)
+
+        logger.info("${description.name} v${description.version} loaded.")
     }
 
     override fun onEnable() {
         super.onEnable()
 
-        consoleSender.from(description.name, "module enabled.")
+        network = Network.init()
+
+        logger.info("${description.name} v${description.version} enabled.")
     }
 
     override fun onDisable() {
         super.onDisable()
 
-        consoleSender.from(description.name, "module disabled.")
+        network.close()
+
+        logger.info("${description.name} v${description.version} disabled.")
+    }
+
+    fun getLogger(): Logger {
+        return logger
     }
 }

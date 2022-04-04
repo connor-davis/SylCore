@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "tech.connordavis"
-version = "0.0.6"
+version = "0.0.7"
 
 publishing {
     repositories {

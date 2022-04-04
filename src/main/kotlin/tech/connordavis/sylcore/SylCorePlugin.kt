@@ -44,14 +44,14 @@ class SylCorePlugin : JavaPlugin() {
         staffChatManager = StaffChatManager(instance)
         moduleManager = SylModuleManager()
 
-        Registrations.registerFiles()
-
-        network = Network.init()
-
         SylModuleLoader
     }
 
     override fun onEnable() {
+        Registrations.registerFiles()
+
+        network = Network.init()
+
         Registrations.registerCommands()
 
         economyManager.loadAccounts()
@@ -77,6 +77,8 @@ class SylCorePlugin : JavaPlugin() {
         fileManager.getFiles().clear()
         commandManager.getCommands().clear()
         staffChatManager.getStaffChatPlayers().clear()
+
+        network.close()
     }
 
     private fun setupVault(): Boolean {
@@ -123,6 +125,8 @@ class SylCorePlugin : JavaPlugin() {
 
     fun performReload() {
         server.pluginManager.disablePlugin(this)
+
+        network = Network.init()
 
         SylModuleLoader
 

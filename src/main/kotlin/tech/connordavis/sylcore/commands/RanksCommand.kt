@@ -200,7 +200,7 @@ class RanksCommand : Command(CommandInfo(
         command: org.bukkit.command.Command,
         commandLabel: String,
         args: Array<out String>,
-    ): MutableList<String>? {
+    ): List<String> {
         when (commandLabel) {
             "ranks" -> {
                 if (args.size == 1) {
@@ -211,11 +211,11 @@ class RanksCommand : Command(CommandInfo(
                         "addPrefix",
                         "removePrefix")
                 } else if (args.size == 2) {
-                    return if (args[0] == "addRank") null else permissionsManager.getGroups().keys.toMutableList()
+                    return if (args[0] == "addRank") emptyList() else permissionsManager.getGroups().keys.toList()
                 }
             }
-            else -> return null
+            else -> return emptyList()
         }
-        return null
+        return emptyList()
     }
 }
