@@ -13,6 +13,7 @@ import tech.connordavis.sylcore.managers.FileManager
 import tech.connordavis.sylcore.managers.StaffChatManager
 import tech.connordavis.sylcore.modules.SylModuleLoader
 import tech.connordavis.sylcore.modules.SylModuleManager
+import tech.connordavis.sylcore.network.Network
 import tech.connordavis.sylcore.utils.Prefixes
 import tech.connordavis.sylcore.utils.from
 import tech.connordavis.sylcore.vault.economy.EconomyManager
@@ -35,6 +36,8 @@ class SylCorePlugin : JavaPlugin() {
         lateinit var staffChatManager: StaffChatManager
             private set
         lateinit var moduleManager: SylModuleManager
+            private set
+        lateinit var network: Network
             private set
     }
 
@@ -62,51 +65,13 @@ class SylCorePlugin : JavaPlugin() {
     }
 
     override fun onEnable() {
-        /**
-         * Module Manager
-         * Here we enable SylModules
-         */
-        server.consoleSender.from(Prefixes.MODULE_MANAGER, "Enabling modules.")
-
-        var enabledCount = 0
-
-        moduleManager.moduleList.forEach { module ->
-            run {
-                if (module.description.dependencies.isNotEmpty()) {
-                    module.description.dependencies.forEach { dependency ->
-                        if (!moduleManager.exists(dependency)) {
-                            server.consoleSender.from(Prefixes.MODULE_MANAGER,
-                                "$9$dependency &7does not exist for module &9${module.description.name}&7, disabling plugin.")
-                            moduleManager.remove(module)
-
-                            return@run
-                        } else {
-                            module.onEnable()
-
-                            enabledCount++
-                        }
-                    }
-                } else {
-                    module.onEnable()
-
-                    enabledCount++
-                }
-            }
-        }
-
-        server.consoleSender.from(Prefixes.MODULE_MANAGER, "Enabled &9${enabledCount} &7modules.")
-
-        // Files
         registerFiles();
 
-        // Commands
         registerCommands();
 
-        // Economy
         economyManager.loadAccounts()
         economyManager.loadBanks()
 
-        // Permissions
         permissionsManager.loadPlayers()
         permissionsManager.loadGroups()
 
@@ -117,30 +82,17 @@ class SylCorePlugin : JavaPlugin() {
         }
 
         registerEvents()
+
+        enableModules()
+
+        network = Network.init()
     }
 
     override fun onDisable() {
-        /**
-         * Module Manager
-         * Here we disable SylModules
-         */
-        server.consoleSender.from(Prefixes.MODULE_MANAGER, "Disabling modules.")
+        disableModules()
 
-        var disabledCount = 0
-
-        moduleManager.moduleList.forEach { module ->
-            module.onDisable()
-
-            disabledCount++
-        }
-
-        server.consoleSender.from(Prefixes.MODULE_MANAGER, "Disabled &9${disabledCount} &7modules.")
-
-        // Files
         fileManager.getFiles().clear()
-        // Commands
         commandManager.getCommands().clear()
-        // Staff Chat Players
         staffChatManager.getStaffChatPlayers().clear()
     }
 
@@ -157,6 +109,7 @@ class SylCorePlugin : JavaPlugin() {
         fileManager.addFile("groups", Groups())
         fileManager.addFile("players", Players())
         fileManager.addFile("homes", Homes())
+        fileManager.addFile("network", NetworkFile())
 
         fileManager.loadFiles()
     }
@@ -168,6 +121,7 @@ class SylCorePlugin : JavaPlugin() {
         commandManager.addCommand("ranks", RanksCommand())
         commandManager.addCommand("home", HomeCommand())
         commandManager.addCommand("staffchat", StaffChatCommand())
+        commandManager.addCommand("sylreload", ReloadCommand())
 
         commandManager.registerCommands()
     }
@@ -198,11 +152,73 @@ class SylCorePlugin : JavaPlugin() {
         return fileManager
     }
 
+    fun getCommandManager(): CommandManager {
+        return commandManager
+    }
+
     fun getStaffChatManager(): StaffChatManager {
         return staffChatManager
     }
 
     fun getModuleManager(): SylModuleManager {
         return moduleManager
+    }
+
+    fun getNetwork(): Network {
+        return network
+    }
+
+    private fun enableModules() {
+        server.consoleSender.from(Prefixes.MODULE_MANAGER, "Enabling modules.")
+
+        var enabledCount = 0
+
+        moduleManager.moduleList.forEach { module ->
+            run {
+                if (module.description.dependencies.isNotEmpty()) {
+                    module.description.dependencies.forEach { dependency ->
+                        if (!moduleManager.exists(dependency)) {
+                            server.consoleSender.from(Prefixes.MODULE_MANAGER,
+                                "$9$dependency &7does not exist for module &9${module.description.name}&7, disabling plugin.")
+                            moduleManager.remove(module)
+
+                            return@run
+                        } else {
+                            module.onEnable()
+
+                            enabledCount++
+                        }
+                    }
+                } else {
+                    module.onEnable()
+
+                    enabledCount++
+                }
+            }
+        }
+
+        server.consoleSender.from(Prefixes.MODULE_MANAGER, "Enabled &9${enabledCount} &7modules.")
+    }
+
+    private fun disableModules() {
+        server.consoleSender.from(Prefixes.MODULE_MANAGER, "Disabling modules.")
+
+        var disabledCount = 0
+
+        moduleManager.moduleList.forEach { module ->
+            module.onDisable()
+
+            disabledCount++
+        }
+
+        server.consoleSender.from(Prefixes.MODULE_MANAGER, "Disabled &9${disabledCount} &7modules.")
+    }
+
+    fun performReload() {
+        server.pluginManager.disablePlugin(this)
+
+        SylModuleLoader
+
+        server.pluginManager.enablePlugin(this)
     }
 }

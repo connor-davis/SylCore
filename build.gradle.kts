@@ -3,10 +3,49 @@ plugins {
     kotlin("plugin.serialization") version "1.4.0"
     id("net.minecrell.plugin-yml.bukkit") version "0.3.0"
     id("com.github.johnrengelman.shadow") version "6.0.0"
+    id("maven-publish")
 }
 
 group = "tech.connordavis"
 version = "0.0.6"
+
+publishing {
+    repositories {
+        maven {
+            val releasesRepoUrl = layout.buildDirectory.dir("repos/releases")
+            val snapshotsRepoUrl = layout.buildDirectory.dir("repos/snapshots")
+            url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+        }
+    }
+    publications {
+        create<MavenPublication>("mavenJava") {
+            pom {
+                name.set("SylCore")
+                description.set("SylCore is a Core plugin for Spigot servers. It handles many things and has an experimental module loader for itself.")
+                url.set("https://github.com/connor-davis/SylCore")
+
+                licenses {
+                    license {
+                        name.set("MIT")
+                        url.set("https://opensource.org/licenses/MIT")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("connor-davis")
+                        name.set("Connor Davis")
+                        email.set("cnnrproton@gmail.com")
+                    }
+                }
+
+                scm {
+                    url.set("https://github.com/connor-davis/SylCore")
+                }
+            }
+        }
+    }
+}
 
 repositories {
     mavenCentral() // This is needed for dependencies.

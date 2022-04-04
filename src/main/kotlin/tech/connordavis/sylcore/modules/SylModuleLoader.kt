@@ -94,8 +94,6 @@ object SylModuleLoader {
             softDependencies
         )
 
-        sylModule.logger = SylCorePlugin.instance.server.consoleSender
-
         sylModule.onLoad()
 
         moduleManager.add(sylModule)
