@@ -29,7 +29,7 @@ abstract class SylModule : ISylModule {
     override fun onLoad() {
         super.onLoad()
 
-        consoleSender.from(description.name, "module loaded.")
+        consoleSender.from(description.name, "${description.name} v${description.version} loaded.")
     }
 
     override fun onEnable() {

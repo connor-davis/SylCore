@@ -12,6 +12,7 @@ class RanksCommand : Command(CommandInfo(
     "ranks",
     "This command lets staff work with ranks and permissions.",
     aliases = arrayOf("players"))) {
+
     private val plugin = SylCorePlugin.instance
     private val permissionsManager = plugin.getPermissionsManager()
 
@@ -200,9 +201,20 @@ class RanksCommand : Command(CommandInfo(
         commandLabel: String,
         args: Array<out String>,
     ): MutableList<String>? {
-        println(args[0])
-        if (args.isEmpty()) {
-            return mutableListOf("players")
+        when (commandLabel) {
+            "ranks" -> {
+                if (args.size == 1) {
+                    return arrayListOf("addRank",
+                        "removeRank",
+                        "addPermission",
+                        "removePermission",
+                        "addPrefix",
+                        "removePrefix")
+                } else if (args.size == 2) {
+                    return if (args[0] == "addRank") null else permissionsManager.getGroups().keys.toMutableList()
+                }
+            }
+            else -> return null
         }
         return null
     }

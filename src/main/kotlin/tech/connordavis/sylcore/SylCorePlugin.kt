@@ -30,10 +30,10 @@ class SylCorePlugin : JavaPlugin() {
         private lateinit var network: Network
     }
 
-    var economy: SylEconomy
-    var permissions: SylPermissions
+    private lateinit var economy: SylEconomy
+    lateinit var permissions: SylPermissions
 
-    init {
+    override fun onLoad() {
         instance = this
         commandManager = CommandManager(instance)
         fileManager = FileManager(instance)
@@ -43,18 +43,15 @@ class SylCorePlugin : JavaPlugin() {
         permissionsManager = PermissionsManager()
         staffChatManager = StaffChatManager(instance)
         moduleManager = SylModuleManager()
-    }
 
-    override fun onLoad() {
-        /**
-         * Module Loader
-         * Here we load SylModules
-         */
+        Registrations.registerFiles()
+
+        network = Network.init()
+
         SylModuleLoader
     }
 
     override fun onEnable() {
-        Registrations.registerFiles()
         Registrations.registerCommands()
 
         economyManager.loadAccounts()
@@ -72,8 +69,6 @@ class SylCorePlugin : JavaPlugin() {
         Registrations.registerEvents()
 
         moduleManager.enableModules()
-
-        network = Network.init()
     }
 
     override fun onDisable() {
